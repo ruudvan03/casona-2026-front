@@ -1,0 +1,46 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import BookingForm from "../components/BookingForm.jsx";
+import RoomCards from "../components/RoomCards.astro";
+---
+
+<Layout title="Palapa La Casona">
+  <Navbar />
+  <main class="pt-24">
+    <section
+      id="reservas"
+      class="max-w-7xl mx-auto px-6 py-16 grid lg:grid-cols-2 gap-12 items-center"
+    >
+      <div>
+        <h1 class="text-6xl font-black text-slate-900 leading-tight">
+          El lugar ideal para tus <span class="text-emerald-600">eventos</span>.
+        </h1>
+        <p class="mt-6 text-lg text-slate-600">
+          Palapa, alberca y descanso en San Jacinto Amilpas, Oaxaca.
+        </p>
+      </div>
+      <BookingForm client:load />
+    </section>
+
+    <RoomCards />
+
+    <section id="contacto" class="py-20 bg-slate-50 text-center">
+      <h2 class="text-3xl font-bold mb-6">Ubicación</h2>
+      <p class="mb-10 text-slate-600">San Jacinto Amilpas, Oaxaca, México.</p>
+      <div
+        class="max-w-5xl mx-auto h-96 bg-slate-200 rounded-3xl overflow-hidden shadow-inner"
+      >
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15251.234567890!2d-96.756!3d17.085!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDA1JzA2LjAiTiA5NsKwNDUnMjEuNiJX!5e0!3m2!1ses!2smx!4v1234567890"
+          width="100%"
+          height="100%"
+          style="border:0;"
+          allowfullscreen=""
+          loading="lazy"
+        >
+        </iframe>
+      </div>
+    </section>
+  </main>
+</Layout>

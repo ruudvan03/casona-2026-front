@@ -1,0 +1,82 @@
+---
+import { getRooms } from "../services/api";
+
+// Llamamos a la API de Laravel
+const rooms = await getRooms();
+
+// URL base para las imágenes del backend
+const BACKEND_URL = "http://localhost:8000/storage/";
+---
+
+<section id="hospedaje" class="py-20 max-w-7xl mx-auto px-6">
+  <div class="text-center mb-16">
+    <h2 class="text-4xl font-black text-slate-800 tracking-tight">
+      Hospedaje de Lujo
+    </h2>
+    <p class="text-slate-500 mt-2 text-lg">
+      Habitaciones disponibles para tu descanso tras el evento.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+    {
+      rooms && rooms.length > 0 ? (
+        rooms.map((room) => (
+          <div class="group bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500">
+            <div class="relative h-72 overflow-hidden">
+              {/* Sincronizado con image_path de tu BD */}
+              <img
+                src={
+                  room.image_path.startsWith("http")
+                    ? room.image_path
+                    : `${BACKEND_URL}${room.image_path}`
+                }
+                alt={room.name}
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              />
+              <div class="absolute top-5 right-5 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg">
+                <span class="text-emerald-700 font-black text-lg">
+                  {/* Sincronizado con price_per_night */}
+                  ${room.price_per_night}
+                </span>
+                <span class="text-[10px] text-slate-400 font-bold uppercase ml-1">
+                  / noche
+                </span>
+              </div>
+            </div>
+
+            <div class="p-8">
+              <h3 class="text-2xl font-bold text-slate-800">{room.name}</h3>
+              <p class="text-slate-500 mt-3 text-sm leading-relaxed">
+                {room.description ||
+                  "Disfruta de la comodidad y tranquilidad en nuestras instalaciones recién remodeladas."}
+              </p>
+
+              <div class="mt-6 pt-6 border-t border-slate-50 flex flex-wrap items-center gap-3">
+                <span class="text-xs font-bold bg-slate-100 text-slate-600 px-3 py-1 rounded-full">
+                  {/* Sincronizado con capacity_label */}
+                  👥 {room.capacity_label || `${room.capacity} Personas`}
+                </span>
+                
+                {/* Botón opcional para reservar vía WhatsApp */}
+                <a 
+                  href={`https://wa.me/tu_numero?text=Hola, me interesa reservar la ${room.name}`}
+                  target="_blank"
+                  class="text-xs font-bold text-emerald-600 hover:text-emerald-700 transition-colors ml-auto"
+                >
+                  Consultar fecha →
+                </a>
+              </div>
+            </div>
+          </div>
+        ))
+      ) : (
+        <div class="col-span-full text-center py-20 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
+          <p class="text-slate-400 font-medium italic">
+            No hay habitaciones publicadas todavía.
+          </p>
+        </div>
+      )
+    }
+  </div>
+</section>
