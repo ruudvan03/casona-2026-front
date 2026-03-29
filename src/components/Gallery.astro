@@ -1,0 +1,104 @@
+---
+// src/components/Gallery.astro
+
+/**
+ * Array de imágenes para la galería.
+ * IMPORTANTE: Para que se vea profesional, te recomiendo que las fotos tengan buena calidad
+ * y que uses la carpeta 'public/images/' para guardarlas.
+ * He preparado placeholders temáticos de lujo.
+ */
+const images = [
+  {
+    src: "https://images.unsplash.com/photo-1560200021-953f47c94514?q=80&w=1200", 
+    alt: "Alberca Palapa La Casona",
+    cols: "md:col-span-2", // Ocupa 2 columnas en pantallas medianas
+    rows: "md:row-span-2", // Ocupa 2 filas
+    category: "Alberca y Relajación"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1610440042-4f8087948a4c?q=80&w=800",
+    alt: "Jardines y Áreas Verdes",
+    category: "Jardines"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1596701062351-8c2c14d1fdd0?q=80&w=800",
+    alt: "Descanso Premium",
+    category: "Hospedaje"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1517457373958-b7bdd0587d7b?q=80&w=1200",
+    alt: "Área de Eventos Palapa",
+    cols: "md:col-span-2",
+    category: "La Palapa"
+  }
+];
+---
+
+<section id="galeria" class="py-24 bg-white overflow-hidden relative">
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-teal-50 rounded-full blur-3xl opacity-50 -z-10 animate-blob"></div>
+    <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-emerald-50 rounded-full blur-3xl opacity-50 -z-10 animate-blob animation-delay-2000"></div>
+
+    <div class="max-w-7xl mx-auto px-6">
+        
+        <div class="text-center mb-16 animate-fade-in-up" style="animation-delay: 0.2s; animation-fill-mode: both;">
+            <span class="inline-block bg-teal-50 text-teal-700 font-bold uppercase tracking-[0.2em] text-xs px-4 py-2 rounded-full border border-teal-100 shadow-sm">
+                Nuestras Instalaciones
+            </span>
+            <h2 class="text-4xl font-black text-slate-900 leading-[1.1] mt-4 uppercase">
+                Conoce <span class="text-emerald-600">tu próximo destino</span>.
+            </h2>
+            <p class="mt-6 text-lg text-slate-600 max-w-xl mx-auto italic">
+                Un vistazo exclusivo a los rincones diseñados para hacer de tu evento una experiencia inolvidable.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 animate-fade-in-up" style="animation-delay: 0.4s; animation-fill-mode: both;">
+            {images.map((img, index) => (
+                <div class={`relative group rounded-[2rem] overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.1)] border border-slate-100 ${img.cols || ''} ${img.rows || ''}`} style={`animation-delay: ${index * 150}ms`}>
+                    
+                    <img 
+                        src={img.src} 
+                        alt={img.alt}
+                        class="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110"
+                        loading="lazy"
+                    />
+
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                    <div class="absolute bottom-6 left-6 right-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        <span class="bg-white/20 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-white/20">
+                            {img.category}
+                        </span>
+                        <h4 class="text-xl font-bold text-white mt-3 uppercase tracking-tight">
+                            {img.alt}
+                        </h4>
+                    </div>
+                </div>
+            ))}
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Reutilizamos animaciones básicas (o puedes asegurarte de tenerlas en Layout) */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes blob {
+        0% { transform: translate(0px, 0px) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+        100% { transform: translate(0px, 0px) scale(1); }
+    }
+    .animate-blob {
+        animation: blob 7s infinite;
+    }
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+</style>

@@ -1,16 +1,24 @@
 ---
 import { getRooms } from "../services/api";
 
-// Llamamos a la API de Laravel
-const rooms = await getRooms();
+// 1. Inicializamos como array vacío para evitar que .map falle en VS Code
+let rooms = [];
 
-// URL base para las imágenes del backend
-const BACKEND_URL = "http://localhost:8000/storage/";
+try {
+  const data = await getRooms();
+  // Nos aseguramos de que 'rooms' siempre sea un array
+  rooms = Array.isArray(data) ? data : [];
+} catch (error) {
+  console.error("Error al cargar habitaciones en el componente:", error);
+}
+
+// 2. Usamos 127.0.0.1 para evitar problemas de resolución de localhost en Node
+const BACKEND_URL = "http://127.0.0.1:8000/storage/";
 ---
 
 <section id="hospedaje" class="py-20 max-w-7xl mx-auto px-6">
   <div class="text-center mb-16">
-    <h2 class="text-4xl font-black text-slate-800 tracking-tight">
+    <h2 class="text-4xl font-black text-slate-800 tracking-tight uppercase">
       Hospedaje de Lujo
     </h2>
     <p class="text-slate-500 mt-2 text-lg">
@@ -23,21 +31,20 @@ const BACKEND_URL = "http://localhost:8000/storage/";
       rooms && rooms.length > 0 ? (
         rooms.map((room) => (
           <div class="group bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500">
-            <div class="relative h-72 overflow-hidden">
-              {/* Sincronizado con image_path de tu BD */}
+            <div class="relative h-72 overflow-hidden bg-slate-100">
+              {/* Usamos Optional Chaining (?.) para que VS Code no marque error si room es null */}
               <img
                 src={
-                  room.image_path.startsWith("http")
+                  room.image_path?.startsWith("http")
                     ? room.image_path
-                    : `${BACKEND_URL}${room.image_path}`
+                    : `${BACKEND_URL}${room.image_path || ""}`
                 }
-                alt={room.name}
+                alt={room.name || "Habitación"}
                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
               <div class="absolute top-5 right-5 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg">
-                <span class="text-emerald-700 font-black text-lg">
-                  {/* Sincronizado con price_per_night */}
-                  ${room.price_per_night}
+                <span class="text-slate-900 font-black text-lg">
+                  ${room.price_per_night || "0"}
                 </span>
                 <span class="text-[10px] text-slate-400 font-bold uppercase ml-1">
                   / noche
@@ -46,23 +53,24 @@ const BACKEND_URL = "http://localhost:8000/storage/";
             </div>
 
             <div class="p-8">
-              <h3 class="text-2xl font-bold text-slate-800">{room.name}</h3>
+              <h3 class="text-2xl font-bold text-slate-800 uppercase tracking-tight">
+                {room.name || "Sin nombre"}
+              </h3>
               <p class="text-slate-500 mt-3 text-sm leading-relaxed">
                 {room.description ||
                   "Disfruta de la comodidad y tranquilidad en nuestras instalaciones recién remodeladas."}
               </p>
 
               <div class="mt-6 pt-6 border-t border-slate-50 flex flex-wrap items-center gap-3">
-                <span class="text-xs font-bold bg-slate-100 text-slate-600 px-3 py-1 rounded-full">
-                  {/* Sincronizado con capacity_label */}
-                  👥 {room.capacity_label || `${room.capacity} Personas`}
+                <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-3 py-1 rounded-full uppercase">
+                  Capacidad:{" "}
+                  {room.capacity_label || `${room.capacity || "2"} Personas`}
                 </span>
-                
-                {/* Botón opcional para reservar vía WhatsApp */}
-                <a 
-                  href={`https://wa.me/tu_numero?text=Hola, me interesa reservar la ${room.name}`}
+
+                <a
+                  href={`https://wa.me/529514401726?text=Hola, me interesa reservar la habitación: ${room.name}`}
                   target="_blank"
-                  class="text-xs font-bold text-emerald-600 hover:text-emerald-700 transition-colors ml-auto"
+                  class="text-[10px] font-bold text-slate-900 hover:text-emerald-700 transition-colors ml-auto uppercase border-b border-slate-900"
                 >
                   Consultar fecha →
                 </a>
@@ -73,7 +81,8 @@ const BACKEND_URL = "http://localhost:8000/storage/";
       ) : (
         <div class="col-span-full text-center py-20 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
           <p class="text-slate-400 font-medium italic">
-            No hay habitaciones publicadas todavía.
+            No hay habitaciones publicadas todavía o el servidor está
+            desconectado.
           </p>
         </div>
       )
